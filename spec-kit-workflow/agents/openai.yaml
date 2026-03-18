@@ -1,0 +1,7 @@
+interface:
+  display_name: "Spec Kit Workflow"
+  short_description: "Run spec-kit workflows in repo"
+  default_prompt: "Use $spec-kit-workflow to run the appropriate spec-kit phase for this repository."
+
+policy:
+  allow_implicit_invocation: true
