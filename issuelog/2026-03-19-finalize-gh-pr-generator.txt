@@ -1,0 +1,17 @@
+Issue: `finalize-gh-pr/scripts/generate_pr_body.py` produced repo-specific and potentially inaccurate PR summaries.
+
+Analysis:
+- Reviewed the new `finalize-gh-pr` skill and exercised `generate_pr_body.py` locally.
+- Found that file categorization only recognized a specific app layout (`src/server`, `src/client`, Vite/TS config files), so the generator would degrade to `other` for many repositories even though the skill is meant to be reusable.
+- Found that `git diff --name-only <base>..<branch>` and `git diff --stat <base>..<branch>` compared branch tips directly instead of comparing the branch against its merge-base with the base branch.
+
+Root cause:
+- The first implementation optimized for one repository shape instead of a generic skill.
+- Diff collection used the base branch ref directly rather than the merge-base commit, which can over-report changes after the base branch advances independently.
+
+Resolution:
+- Updated the generator to compute `git merge-base <base> <branch>` and use that commit for changed-file and diff-stat collection.
+- Replaced repo-specific bucket rules with broader heuristics for docs, application code, tests, tooling, and infra paths so the generated summary works across more repositories.
+- Added the resolved merge-base to the generated PR appendix for reviewer context.
+- Updated the skill instructions and principles reference so their suggested inspection commands also use the merge-base instead of the moving base-branch tip.
+- Added `scripts/check-doc-ref-links.sh` because this repository requires that checker before committing Markdown changes, and it was missing.

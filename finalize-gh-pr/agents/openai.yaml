@@ -1,0 +1,4 @@
+interface:
+  display_name: "Finalize GitHub PR"
+  short_description: "Clean commit history and open a draft PR"
+  default_prompt: "Use $finalize-gh-pr to clean up a branch history and open a reviewer-friendly draft PR."
