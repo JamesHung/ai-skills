@@ -1,0 +1,16 @@
+Issue: public repo security and hygiene review before publishing this skills repository.
+
+Analysis:
+- Scanned tracked files for secrets, private keys, and unsafe local-environment artifacts.
+- No committed live API keys, private keys, or .env files were found.
+- Found tracked local symlink trees under .agents/ and .claude/ that expose absolute paths such as /Users/hungming-hung/skills/...
+- Found tracked generated artifacts: .DS_Store files and skill-installer/scripts/__pycache__/github_utils.cpython-311.pyc.
+
+Root cause:
+- Local sync output and OS/runtime-generated files were committed into the repository.
+- The repository did not have a root .gitignore to exclude machine-specific artifacts.
+
+Resolution:
+- Added a root .gitignore to ignore .agents/, .claude/, .DS_Store, __pycache__/, and *.py[cod].
+- Planned removal of tracked symlinks and generated files from git history going forward by untracking them in the current commit.
+- Left functional source files unchanged.
