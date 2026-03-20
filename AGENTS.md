@@ -54,6 +54,7 @@
 重要：
 
 - 不要等待用戶提醒，在完成程式碼修改後自動執行上述 git 工作流程。
+- 不得平行執行可能操作 Git index、staging area 或工作樹狀態的指令；`git add`、`git commit`、`git status`、`git diff` 等流程應以單線程依序執行，避免產生 `.git/index.lock` 或狀態競爭。
 - 提交前檢查：若本次改動包含 `*.md`，必須先執行 `scripts/check-doc-ref-links.sh` 並確保通過；若未通過，需先修正後才可以 commit。
 - 進入子目錄工作前，請先檢查該子目錄是否有 `AGENTS.md`，並遵循其額外指示。
 
