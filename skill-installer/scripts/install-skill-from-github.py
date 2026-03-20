@@ -214,9 +214,8 @@ def _resolve_source(args: Args) -> Source:
         elif url_path:
             paths = [url_path]
         else:
-            paths = []
-        if not paths:
-            raise InstallError("Missing --path for GitHub URL.")
+            # Allow repo-root skills when the GitHub URL points at the repo itself.
+            paths = ["."]
         return Source(owner=owner, repo=repo, ref=ref, paths=paths)
 
     if not args.repo:
@@ -282,7 +281,12 @@ def main(argv: list[str]) -> int:
             installed = []
             for path in source.paths:
                 skill_name = args.name if len(source.paths) == 1 else None
-                skill_name = skill_name or os.path.basename(path.rstrip("/"))
+                if not skill_name:
+                    normalized_path = path.rstrip("/") or path
+                    if normalized_path in ("", "."):
+                        skill_name = source.repo
+                    else:
+                        skill_name = os.path.basename(normalized_path)
                 _validate_skill_name(skill_name)
                 if not skill_name:
                     raise InstallError("Unable to derive skill name.")
